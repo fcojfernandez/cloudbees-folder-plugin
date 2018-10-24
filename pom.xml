@@ -69,7 +69,7 @@
       <scope>test</scope>
     </dependency>
   </dependencies>
-<!-- Just a comment -->
+<!-- Just another comment -->
   <build>
     <plugins>
       <plugin>
