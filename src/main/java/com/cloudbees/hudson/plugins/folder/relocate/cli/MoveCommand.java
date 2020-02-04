@@ -95,9 +95,9 @@ public class MoveCommand extends CLICommand {
                 return VALIDATIONS_ERROR_CODE;
             }
 
-            moveItems();
+            validationsList = moveItems();
 
-            success("All items have been moved");
+            success("Command finished", validationsList);
         } catch (Exception e) {
             LOGGER.log(Level.SEVERE, "Error calling Move CLI command", e);
             failure(e.getMessage());
@@ -106,7 +106,7 @@ public class MoveCommand extends CLICommand {
         return SUCCESS_RETURN_CODE;
     }
 
-    private void moveItems() {
+    private List<CLIOutput> moveItems() {
         List<CLIOutput> output = new ArrayList<>();
 
         for(TopLevelItem item : items) {
@@ -133,6 +133,8 @@ public class MoveCommand extends CLICommand {
                 }
             }
         }
+
+        return output;
     }
 
     private List<CLIOutput> validateInput() throws IOException {
@@ -159,7 +161,8 @@ public class MoveCommand extends CLICommand {
             // check if the destination is valid for the item
             ItemGroup dest = null;
             for (ItemGroup itemGroup : listDestinations(item)) {
-                if (("/" + itemGroup.getFullName()).equals(folder)) {
+                // destination folder might begin with or without "/"
+                if (("/" + itemGroup.getFullName()).equals(folder) || itemGroup.getFullName().equals(folder)) {
                     dest = itemGroup;
                     break;
                 }
@@ -210,8 +213,8 @@ public class MoveCommand extends CLICommand {
         return result;
     }
 
-    private void success(@NonNull String message) throws IOException {
-        writeOutput(new CLIResult(message, CLIResult.Status.SUCCESS));
+    private void success(@NonNull String message, List<CLIOutput> outputs) throws IOException {
+        writeOutput(new CLIResult(message, CLIResult.Status.SUCCESS, outputs));
     }
 
     private void failure(@NonNull String message) throws IOException {
