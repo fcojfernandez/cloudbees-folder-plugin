@@ -73,7 +73,7 @@ public class MoveCommand extends CLICommand {
 
     @Override
     public String getShortDescription() {
-        return "Moves items to a folder";
+        return "Moves items to a folder. Specify 'jenkins' to move to the root folder";
     }
 
     @Override
@@ -143,7 +143,7 @@ public class MoveCommand extends CLICommand {
         List<CLIOutput> validations = new ArrayList<>();
 
         // Destination
-        if (jenkins.getItemByFullName(folder) == null) {
+        if (!"jenkins".equalsIgnoreCase(folder) && jenkins.getItemByFullName(folder) == null) {
             if (create) {
                 createFolder(jenkins);
             } else {
@@ -161,8 +161,9 @@ public class MoveCommand extends CLICommand {
             // check if the destination is valid for the item
             ItemGroup dest = null;
             for (ItemGroup itemGroup : listDestinations(item)) {
+                String destinationFolder = folder.equalsIgnoreCase("jenkins") ? "" : folder;
                 // destination folder might begin with or without "/"
-                if (("/" + itemGroup.getFullName()).equals(folder) || itemGroup.getFullName().equals(folder)) {
+                if (("/" + itemGroup.getFullName()).equals(destinationFolder) || itemGroup.getFullName().equals(destinationFolder)) {
                     dest = itemGroup;
                     break;
                 }

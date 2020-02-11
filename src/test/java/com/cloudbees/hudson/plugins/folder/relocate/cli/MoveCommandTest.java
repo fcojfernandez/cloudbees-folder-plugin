@@ -230,6 +230,24 @@ public class MoveCommandTest {
         assertEquals(3, moved.getLastBuild().getNumber());
     }
 
+    @Test
+    public void testMoveToRoot() {
+        // Check initial location
+        assertNull(rule.jenkins.getItem(FREE_IN_ORIGIN_FOLDER));
+        Folder origin = (Folder) rule.jenkins.getItem(ORIGIN_FOLDER);
+        assertNotNull(origin.getItem(FREE_IN_ORIGIN_FOLDER));
+
+        CLICommandInvoker invoker = createInvoker("jenkins",new FreeStyleProject[] {freeInOrigin});
+        CLICommandInvoker.Result result = invoker.invoke();
+        assertThat(result, succeeded());
+        assertThat(result.stdout(), containsString(String.format("%s: Successfully moved to 'jenkins'", FREE_IN_ORIGIN_FOLDER, ORIGIN_FOLDER)));
+
+        // Check it has been moved
+        assertNotNull(rule.jenkins.getItem(FREE_IN_ORIGIN_FOLDER));
+        origin = (Folder) rule.jenkins.getItem(ORIGIN_FOLDER);
+        assertNull(origin.getItem(FREE_IN_ORIGIN_FOLDER));
+    }
+
     private CLICommandInvoker createInvoker(String destinationFolder, TopLevelItem... itemsToMove) {
         return createInvoker(null, destinationFolder, itemsToMove);
     }
