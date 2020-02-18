@@ -69,7 +69,6 @@ public class MoveCommand extends CLICommand {
     protected static final int VALIDATIONS_ERROR_CODE = 101;
 
     private static final Logger LOGGER = Logger.getLogger(MoveCommand.class.getName());
-    private static final String COMMAND_ID = "Move Command";
 
     @Override
     public String getShortDescription() {
